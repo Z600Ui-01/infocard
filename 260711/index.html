@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파티 캐릭터 카드</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --paper:#ffffff;
+    --line:#111111;
+    --hair:#e2e2e2;
+    --mute:#8a8a8a;
+    --tint:#f5f5f5;
+    --radius:4px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+    background:#ffffff;
+    color:var(--ink);
+    line-height:1.6;
+    padding:48px 20px 80px;
+    letter-spacing:-0.01em;
+  }
+
+  .page-head{
+    max-width:960px;
+    margin:0 auto 40px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:2px solid var(--line);
+    padding-bottom:16px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .page-head h1{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+  }
+  .page-head .sub{
+    font-size:13px;
+    color:var(--mute);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .grid{
+    max-width:960px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+  }
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr}
+    body{padding:32px 16px 64px}
+  }
+
+  /* ---- card ---- */
+  .card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  .card-top{
+    padding:26px 24px 20px;
+    border-bottom:1px solid var(--hair);
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .heading{min-width:0}
+  .char-name{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.03em;
+    line-height:1.15;
+    word-break:keep-all;
+    color:#0d0d0d;
+  }
+  .char-name .latin{
+    display:block;
+    font-size:14px;
+    font-weight:500;
+    color:var(--mute);
+    margin-top:4px;
+    letter-spacing:0;
+  }
+  .player{
+    flex:0 0 auto;
+    font-size:12px;
+    font-weight:600;
+    color:var(--mute);
+    padding-top:4px;
+    white-space:nowrap;
+    letter-spacing:0;
+  }
+  .player .pk{
+    font-weight:500;
+    color:#b5b5b5;
+    margin-right:3px;
+  }
+
+  /* stat rows */
+  .stats{
+    padding:14px 22px 2px;
+  }
+  .stat{
+    display:flex;
+    align-items:baseline;
+    padding:7px 0;
+    border-bottom:1px dotted var(--hair);
+    font-size:14px;
+  }
+  .stat:last-child{border-bottom:none}
+  .stat .k{
+    flex:0 0 130px;
+    color:var(--mute);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0;
+    word-break:keep-all;
+  }
+  .stat .v{flex:1;font-weight:600;font-size:14px;word-break:keep-all;color:#1a1a1a}
+  .name-empty{color:#c8c8c8;font-weight:700}
+  .stat.empty{
+    color:var(--mute);
+    font-size:13px;
+    font-weight:500;
+    border-bottom:none;
+    padding:4px 0 72px;
+  }
+
+  /* lore block */
+  .lore{
+    margin:16px 22px 22px;
+    border-radius:var(--radius);
+    background:#f7f7f7;
+    position:relative;
+  }
+  .copy-btn{
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:28px;
+    padding:0;
+    border:1px solid var(--hair);
+    background:var(--paper);
+    color:var(--mute);
+    border-radius:var(--radius);
+    cursor:pointer;
+    transition:background .12s,color .12s,border-color .12s;
+  }
+  .copy-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .copy-btn.done{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .copy-btn .ic-copy{display:block}
+  .copy-btn .ic-done{display:none}
+  .copy-btn.done .ic-copy{display:none}
+  .copy-btn.done .ic-done{display:block}
+  .lore-body{
+    padding:14px 40px 16px 14px;
+    font-size:16px;
+    line-height:1.72;
+    white-space:pre-wrap;
+    word-break:keep-all;
+    color:#333333;
+    letter-spacing:-0.1px;
+  }
+  .lore-body .quote{
+    font-style:italic;
+    color:#000;
+  }
+
+  .footer{
+    max-width:960px;
+    margin:44px auto 0;
+    text-align:center;
+    font-size:11.5px;
+    color:var(--mute);
+    letter-spacing:0.02em;
+  }
+
+  /* focus visibility */
+  .copy-btn:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+  <main class="grid" id="grid"></main>
+
+<script>
+const CHARACTERS = [
+  {
+    id:"gillein",
+    name:"길레인 멘테",
+    latin:"Gillein Mente",
+    player:"한우",
+    stats:[
+      {k:"종족", v:"드로우 (다크 엘프)"},
+      {k:"클래스", v:"팔라딘"},
+      {k:"배경", v:"장인 — 작은 도시의 대장장이 아들"}
+    ],
+    lore:`길레인은 한평생 이대로 멘테네 깡깡 대장간 대장장이가 되거나 변변찮은 마법사가 될 줄 알았다.
+
+언더다크에 잠시 머물던 모험가 무리가 아버지의 대장간에 잔무기를 손보러 들렀을 때, 길레인은 만나고 만 것이다.
+
+이 칙칙한 지하 세계 속 은방울꽃처럼 희게 핀 금빛 팔라딘을! 지금까지 본 어떤 팔라딘도 그보다 성스러울 수는 없었다.
+
+그리고 길레인은… '저 팔라딘이 될래요.' 저질렀다.
+'길리, 대장장이 아들이 형태야 뭐가 되었든 간에 손에 철만 들면 되는 거 아니겠느냐.'
+
+아버지! 그 믿음에 감격해 길레인은 아버지의 걸작 32호를 챙겨 곧장 지하 세계에서 도망쳐 나왔다.
+
+불효자 자식 같으니라고.`
+  },
+  {
+    id:"miro",
+    name:"미로",
+    latin:"Miro",
+    player:"온",
+    stats:[
+      {k:"종족", v:"인간"},
+      {k:"클래스", v:"위저드"},
+      {k:"배경", v:"장인"},
+      {k:"희망 추가 기술숙련", v:"포착 &gt; 비전"}
+    ],
+    lore:`북방 장인 도시의 시계공 집안 출신이다.
+
+'고장 난 이유는 열어 보면 안다.'
+
+작은 흔적과 세밀한 구조를 살피는 데 익숙하다. 이론보다 직접 검증한 결과를 신뢰하며, 준비만 끝났다면 위험도 기꺼이 감수한다.
+
+시계의 톱니바퀴처럼 만물이 저마다의 원리로 맞물려 움직인다고 믿었던 미로는 자연스럽게 마법에 흥미를 갖게 되었고, 시계 공방을 우연히 찾은 위저드의 도제가 되었다. 그러나 미로의 방식을 무모하다고 여긴 스승과 반복해서 충돌한 끝에 결별했다.
+
+이후 더 많은 실전을 경험하기 위해 모험가가 되었고, 최근 플란에서 몇몇 모험가들과 임시 파티를 꾸렸다.
+아직은 서로를 잘 알지 못하지만, 함께 의뢰를 해결하며 호흡을 맞춰 가는 중이다.`
+  },
+  {
+    id:"cam",
+    name:"",
+    latin:"",
+    player:"캄",
+    stats:[],
+    lore:""
+  }
+];
+
+const grid = document.getElementById("grid");
+
+function statRow(s){
+  return `<div class="stat"><span class="k">${s.k}</span><span class="v">${s.v}</span></div>`;
+}
+
+CHARACTERS.forEach(c=>{
+  const el = document.createElement("article");
+  el.className="card";
+
+  const nameHtml = c.name
+    ? `${c.name}${c.latin ? `<span class="latin">${c.latin}</span>` : ""}`
+    : `<span class="name-empty">미정</span>`;
+
+  const statsHtml = c.stats.length
+    ? c.stats.map(statRow).join("")
+    : `<div class="stat empty">아직 작성되지 않았습니다.</div>`;
+
+  const loreHtml = c.lore
+    ? `<div class="lore">
+        <button class="copy-btn" type="button" id="copy-${c.id}" aria-label="줄글 복사" title="복사">
+          <svg class="ic-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <svg class="ic-done" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </button>
+        <div class="lore-body" id="lore-${c.id}">${escapeHtml(c.lore)}</div>
+      </div>`
+    : "";
+
+  el.innerHTML = `
+    <div class="card-top">
+      <div class="heading">
+        <div class="char-name">${nameHtml}</div>
+      </div>
+      <div class="player"><span class="pk">PLAYER</span>${c.player}</div>
+    </div>
+    <div class="stats">
+      ${statsHtml}
+    </div>
+    ${loreHtml}
+  `;
+  grid.appendChild(el);
+
+  // copy
+  if(c.lore){
+    const copyBtn = el.querySelector(`#copy-${c.id}`);
+    copyBtn.addEventListener("click",async ()=>{
+      try{
+        await navigator.clipboard.writeText(c.lore);
+      }catch(err){
+        const ta=document.createElement("textarea");
+        ta.value=c.lore; document.body.appendChild(ta);
+        ta.select(); document.execCommand("copy"); ta.remove();
+      }
+      copyBtn.classList.add("done");
+      setTimeout(()=>{copyBtn.classList.remove("done");},1400);
+    });
+  }
+});
+
+function escapeHtml(str){
+  return str.replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+}
+</script>
+</body>
+</html>
