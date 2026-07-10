@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>캐릭터 등록</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+<style>
+  :root{ --ink:#0a0a0a; --paper:#fff; --line:#111; --hair:#e2e2e2; --mute:#8a8a8a; --tint:#f7f7f7; --radius:4px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+    background:#fff; color:var(--ink); line-height:1.6;
+    letter-spacing:-0.01em; display:flex; justify-content:center; padding:48px 20px 80px;
+  }
+  .wrap{width:100%;max-width:460px}
+  h1{font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px}
+  .desc{color:var(--mute);font-size:13px;margin-bottom:28px}
+  .field{margin-bottom:18px}
+  label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+  .hint{color:var(--mute);font-weight:500;font-size:12px}
+  input,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--hair);border-radius:var(--radius);
+    font-size:15px;font-family:inherit;background:var(--paper);color:var(--ink);outline:none;
+    transition:border-color .12s;
+  }
+  input:focus,textarea:focus{border-color:var(--line)}
+  textarea{resize:vertical;min-height:150px;line-height:1.7}
+  .preview{
+    width:84px;height:84px;border-radius:var(--radius);object-fit:cover;
+    border:1px solid var(--hair);background:var(--tint);margin-top:10px;display:none;
+  }
+  button{
+    width:100%;padding:14px;border:none;border-radius:var(--radius);
+    background:var(--line);color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+    margin-top:8px;font-family:inherit;
+  }
+  button:disabled{opacity:.5;cursor:default}
+  .msg{text-align:center;font-size:14px;margin-top:16px;min-height:20px}
+  .msg.err{color:#d64545}
+  .editbox{
+    display:none;margin-top:22px;padding:18px;border:1px solid var(--hair);
+    border-radius:var(--radius);background:var(--tint);
+  }
+  .editbox-title{font-size:15px;font-weight:800;margin-bottom:6px}
+  .editbox-desc{font-size:13px;line-height:1.55;color:#555;margin-bottom:12px}
+  .editbox-desc b{color:#111}
+  .editlink-row{display:flex;gap:8px}
+  .editlink-row input{flex:1;padding:10px 12px;font-size:13px}
+  .copy-btn{width:auto;margin:0;padding:0 16px;white-space:nowrap;font-size:13px}
+  .section-line{
+    margin:26px 0 18px;border-top:1px solid var(--hair);padding-top:20px;
+    font-size:12px;font-weight:700;color:var(--mute);letter-spacing:0.04em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>캐릭터 등록</h1>
+  <p class="desc">파티원 캐릭터를 등록해 주세요.</p>
+
+  <div class="field">
+    <label>프로필 이미지 URL <span class="hint">— 정사각형(1:1) 이미지 주소. 없으면 비워도 돼요</span></label>
+    <input id="imageUrl" type="url" placeholder="https://..." oninput="preview()">
+    <img id="preview" class="preview" alt="">
+  </div>
+
+  <div class="field">
+    <label>이름 <span class="hint">— 한글</span></label>
+    <input id="name" type="text" placeholder="예: 길레인 멘테">
+  </div>
+
+  <div class="field">
+    <label>로마자 이름 <span class="hint">— 선택</span></label>
+    <input id="latin" type="text" placeholder="예: Gillein Mente">
+  </div>
+
+  <div class="field">
+    <label>플레이어 <span class="hint">— 본인 이름/닉네임</span></label>
+    <input id="player" type="text" placeholder="예: 온">
+  </div>
+
+  <div class="section-line">캐릭터 정보</div>
+
+  <div class="field">
+    <label>종족</label>
+    <input id="race" type="text" placeholder="예: 인간, 드로우 (다크 엘프)">
+  </div>
+
+  <div class="field">
+    <label>클래스</label>
+    <input id="charClass" type="text" placeholder="예: 위저드, 팔라딘">
+  </div>
+
+  <div class="field">
+    <label>배경 <span class="hint">— 한 줄 요약 (예: 장인 — 대장장이 아들)</span></label>
+    <input id="background" type="text" placeholder="예: 장인">
+  </div>
+
+  <div class="field">
+    <label>희망 추가 기술숙련 <span class="hint">— 선택. 없으면 비워두세요</span></label>
+    <input id="extraSkill" type="text" placeholder="예: 포착 > 비전">
+  </div>
+
+  <div class="field">
+    <label>배경 서사 <span class="hint">— 캐릭터 이야기를 자유롭게</span></label>
+    <textarea id="lore" placeholder="캐릭터의 배경 이야기를 적어주세요."></textarea>
+  </div>
+
+  <button id="submitBtn" onclick="submit()">등록하기</button>
+  <div id="msg" class="msg"></div>
+
+  <div id="editBox" class="editbox">
+    <p class="editbox-title">✅ 등록 완료!</p>
+    <p class="editbox-desc">아래 <b>수정 링크</b>를 꼭 저장해 두세요. 나중에 이 링크로 들어오면 캐릭터 정보를 고칠 수 있어요.</p>
+    <div class="editlink-row">
+      <input id="editLink" type="text" readonly>
+      <button type="button" class="copy-btn" onclick="copyLink()">복사</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ↓↓↓ 여기에 Apps Script 웹 앱 URL을 붙여넣으세요 ↓↓↓
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwSENaCv0EP_3Q59o027SeUAL48NskSZvNSz97NJ6MSpfnd3ZJi35hF34Ycl2vfCLVl-w/exec';
+
+  function preview(){
+    const url=document.getElementById('imageUrl').value.trim();
+    const img=document.getElementById('preview');
+    if(url){img.src=url;img.style.display='block';}else{img.style.display='none';}
+  }
+
+  const FIELDS=['imageUrl','name','latin','player','race','charClass','background','extraSkill','lore'];
+
+  async function submit(){
+    const btn=document.getElementById('submitBtn');
+    const msg=document.getElementById('msg');
+    msg.className='msg'; msg.textContent='';
+
+    const payload={};
+    FIELDS.forEach(id=>payload[id]=document.getElementById(id).value.trim());
+
+    if(!payload.name){
+      msg.className='msg err'; msg.textContent='이름은 꼭 입력해 주세요.'; return;
+    }
+
+    btn.disabled=true; btn.textContent='등록 중...';
+    try{
+      const res=await fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(payload),
+        redirect:'follow'
+      });
+      const data=await res.json();
+      if(data.result==='success'&&data.id){
+        const editUrl=new URL('edit.html',window.location.href).href+'?id='+data.id;
+        document.getElementById('editLink').value=editUrl;
+        document.getElementById('editBox').style.display='block';
+        FIELDS.forEach(id=>document.getElementById(id).value='');
+        document.getElementById('preview').style.display='none';
+      }else{
+        msg.className='msg err'; msg.textContent='등록에 문제가 생겼어요. 다시 시도해 주세요.';
+      }
+    }catch(err){
+      msg.className='msg err'; msg.textContent='오류가 발생했어요. 다시 시도해 주세요.';
+    }finally{
+      btn.disabled=false; btn.textContent='등록하기';
+    }
+  }
+
+  function copyLink(){
+    const input=document.getElementById('editLink');
+    input.select();
+    navigator.clipboard.writeText(input.value).then(()=>{
+      const btn=document.querySelector('.copy-btn');
+      const orig=btn.textContent; btn.textContent='복사됨';
+      setTimeout(()=>{btn.textContent=orig;},1500);
+    });
+  }
+</script>
+</body>
+</html>
