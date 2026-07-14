@@ -40,8 +40,11 @@
     display:flex; flex-direction:column; overflow:hidden;
   }
   .card-top{
-    padding:26px 24px 20px; border-bottom:1px solid var(--hair);
-    display:flex; align-items:flex-start; gap:16px;
+    padding:24px 24px 20px; border-bottom:1px solid var(--hair);
+    display:flex; flex-direction:column;
+  }
+  .id-row{
+    display:flex; align-items:center; gap:16px; margin-top:16px;
   }
   .avatar{
     flex:0 0 auto; width:60px; height:60px; border-radius:var(--radius);
@@ -52,8 +55,8 @@
     background:var(--ink); color:#fff; display:flex; align-items:center;
     justify-content:center; font-size:24px; font-weight:800;
   }
-  .heading{min-width:0;flex:1}
   .char-name{
+    min-width:0; flex:1;
     font-size:22px; font-weight:700; letter-spacing:-0.03em; line-height:1.15;
     word-break:keep-all; color:#0d0d0d;
   }
@@ -62,7 +65,7 @@
     margin-top:4px; letter-spacing:0;
   }
   .player{
-    font-size:12px; font-weight:600; color:var(--mute); margin-top:8px;
+    font-size:12px; font-weight:600; color:var(--mute);
     white-space:nowrap; letter-spacing:0;
   }
   .player .pk{font-weight:500;color:#b5b5b5;margin-right:3px}
@@ -111,11 +114,6 @@
 </head>
 <body>
 
-  <div class="page-head">
-    <h1>세션 캐릭터</h1>
-    <span class="sub" id="count"></span>
-  </div>
-
   <main class="grid" id="grid"></main>
   <div id="state" class="state">불러오는 중...</div>
 
@@ -140,7 +138,6 @@
     const state=document.getElementById("state");
     if(!list.length){ state.textContent='아직 등록된 캐릭터가 없어요.'; return; }
     state.style.display='none';
-    document.getElementById("count").textContent=list.length+" characters";
 
     list.forEach(c=>{
       const el=document.createElement("article");
@@ -174,10 +171,10 @@
 
       el.innerHTML=`
         <div class="card-top">
-          ${avatarHtml}
-          <div class="heading">
+          <div class="player"><span class="pk">PLAYER</span>${escapeHtml(c.player||"")}</div>
+          <div class="id-row">
+            ${avatarHtml}
             <div class="char-name">${nameHtml}</div>
-            <div class="player"><span class="pk">PLAYER</span>${escapeHtml(c.player||"")}</div>
           </div>
         </div>
         <div class="stats">${statsHtml}</div>
