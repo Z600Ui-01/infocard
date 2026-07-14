@@ -72,7 +72,7 @@
   </div>
 
   <div class="field">
-    <label>로마자 이름 <span class="hint">— 선택</span></label>
+    <label>로마자 이름</label>
     <input id="latin" type="text" placeholder="로마자 이름을 입력해 주세요">
   </div>
 
@@ -141,8 +141,8 @@
     const payload={};
     FIELDS.forEach(id=>payload[id]=document.getElementById(id).value.trim());
 
-    if(!payload.name){
-      msg.className='msg err'; msg.textContent='이름은 꼭 입력해 주세요.'; return;
+    if(!payload.name && !payload.player){
+      msg.className='msg err'; msg.textContent='이름 또는 플레이어 중 하나는 입력해 주세요.'; return;
     }
 
     btn.disabled=true; btn.textContent='등록 중...';
