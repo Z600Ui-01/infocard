@@ -59,6 +59,7 @@
 <body>
 <div class="wrap">
   <h1>캐릭터 등록</h1>
+  <p class="desc" id="partyLabel"></p>
 
   <div class="field">
     <label>프로필 이미지 URL <span class="hint">— 디스코드 채널에 사진을 올린 뒤, 그 이미지를 크게 열고 "링크 복사"(모바일은 길게 누르기 → 링크 복사)로 나온 주소를 붙여넣으세요. 주소가 <b>.png / .jpg</b> 등으로 끝나야 카드에 표시돼요. 없으면 비워도 돼요.</span></label>
@@ -132,13 +133,18 @@
   }
 
   const FIELDS=['imageUrl','name','latin','player','race','charClass','background','extraSkill','lore'];
+  const PARTY=new URLSearchParams(window.location.search).get('party')||'';
+  (function(){
+    const el=document.getElementById('partyLabel');
+    el.textContent=PARTY? '파티: '+PARTY : '⚠️ 파티가 지정되지 않았어요. 주소 끝에 ?party=파티이름 을 붙여주세요.';
+  })();
 
   async function submit(){
     const btn=document.getElementById('submitBtn');
     const msg=document.getElementById('msg');
     msg.className='msg'; msg.textContent='';
 
-    const payload={};
+    const payload={party:PARTY};
     FIELDS.forEach(id=>payload[id]=document.getElementById(id).value.trim());
 
     if(!payload.name && !payload.player){
@@ -155,7 +161,8 @@
       });
       const data=await res.json();
       if(data.result==='success'&&data.id){
-        const editUrl=new URL('edit.html',window.location.href).href+'?id='+data.id;
+        let editUrl=new URL('edit.html',window.location.href).href+'?id='+data.id;
+        if(PARTY) editUrl+='&party='+encodeURIComponent(PARTY);
         document.getElementById('editLink').value=editUrl;
         document.getElementById('editBox').style.display='block';
         FIELDS.forEach(id=>document.getElementById(id).value='');

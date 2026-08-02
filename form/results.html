@@ -200,8 +200,10 @@
 
   async function load(){
     const state=document.getElementById("state");
+    const party=new URLSearchParams(window.location.search).get('party')||'';
     try{
-      const res=await fetch(API_URL);
+      const url=party? API_URL+'?party='+encodeURIComponent(party) : API_URL;
+      const res=await fetch(url);
       const list=await res.json();
       render(list);
     }catch(err){
