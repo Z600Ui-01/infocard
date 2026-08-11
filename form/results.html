@@ -148,8 +148,8 @@
         : `<span class="name-empty">미정</span>`;
 
       const avatarHtml=c.imageUrl
-        ? `<img class="avatar" src="${escapeHtml(c.imageUrl)}" alt="" onerror="this.outerHTML='<div class=\\'avatar-fallback\\'>${escapeHtml(initial(c.name))}</div>'">`
-        : `<div class="avatar-fallback">${escapeHtml(initial(c.name))}</div>`;
+        ? `<img class="avatar" src="${escapeHtml(c.imageUrl)}" alt="" onerror="this.remove()">`
+        : "";
 
       // stats 조립 (값 있는 것만)
       const rows=[];
