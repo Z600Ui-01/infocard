@@ -27,6 +27,27 @@
   .page-head h1{font-size:22px;font-weight:800;letter-spacing:-0.02em}
   .page-head .sub{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
 
+  /* 모바일 전용 요약 바 */
+  .summary{display:none}
+  @media (max-width:760px){
+    .summary{
+      display:block; max-width:1200px; margin:0 auto 24px;
+    }
+    .summary-count{
+      font-size:12px; font-weight:500; color:var(--mute);
+      letter-spacing:0.03em; margin-bottom:10px;
+    }
+    .summary-chips{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{
+      font-size:13px; font-weight:600; color:#1a1a1a;
+      padding:6px 12px; border:1px solid var(--hair); border-radius:999px;
+      background:var(--paper); cursor:pointer; white-space:nowrap;
+      font-family:inherit;
+    }
+    .chip:active{background:var(--ink); color:#fff; border-color:var(--ink)}
+    .chip.chip-empty{color:var(--mute)}
+  }
+
   .grid{
     max-width:1200px; margin:0 auto; display:grid;
     grid-template-columns:repeat(3,1fr); gap:28px;
@@ -114,6 +135,7 @@
 </head>
 <body>
 
+  <div class="summary" id="summary"></div>
   <main class="grid" id="grid"></main>
   <div id="state" class="state">불러오는 중...</div>
 
@@ -139,9 +161,10 @@
     if(!list.length){ state.textContent='아직 등록된 캐릭터가 없어요.'; return; }
     state.style.display='none';
 
-    list.forEach(c=>{
+    list.forEach((c,i)=>{
       const el=document.createElement("article");
       el.className="card";
+      el.id="card-"+i;
 
       const nameHtml=c.name
         ? `${escapeHtml(c.name)}${c.latin?`<span class="latin">${escapeHtml(c.latin)}</span>`:""}`
@@ -195,6 +218,31 @@
           setTimeout(()=>btn.classList.remove("done"),1400);
         });
       }
+    });
+
+    buildSummary(list);
+  }
+
+  function buildSummary(list){
+    const summary=document.getElementById("summary");
+    if(!list.length){ summary.innerHTML=""; return; }
+
+    const chips=list.map((c,i)=>{
+      const hasName=c.name&&c.name.trim();
+      const label=hasName? c.name.trim() : "미정";
+      return `<button class="chip${hasName?"":" chip-empty"}" type="button" data-target="card-${i}">${escapeHtml(label)}</button>`;
+    }).join("");
+
+    summary.innerHTML=`
+      <div class="summary-count">${list.length}명 등록됨</div>
+      <div class="summary-chips">${chips}</div>
+    `;
+
+    summary.querySelectorAll(".chip").forEach(chip=>{
+      chip.addEventListener("click",()=>{
+        const target=document.getElementById(chip.dataset.target);
+        if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
+      });
     });
   }
 
