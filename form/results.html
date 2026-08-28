@@ -163,11 +163,11 @@
 
   /* 복사 완료 토스트 */
   .toast{
-    position:fixed; left:50%; bottom:32px; transform:translateX(-50%) translateY(12px);
+    position:fixed; left:50%; top:24px; transform:translateX(-50%) translateY(-12px);
     display:flex; align-items:center; gap:10px;
     padding:11px 18px 11px 12px; border-radius:22px;
     background:rgba(0,0,0,0.4); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    color:#FCFCFC; font-size:14px; font-weight:500; letter-spacing:-0.01em;
+    color:#FCFCFC; font-size:14px; font-weight:500; letter-spacing:-0.01em; white-space:nowrap;
     box-shadow:0 6px 24px rgba(0,0,0,0.18);
     opacity:0; pointer-events:none; z-index:1000;
     transition:opacity .22s ease, transform .22s ease;
@@ -200,7 +200,7 @@
     <span class="toast-icon">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
     </span>
-    <span>줄글이 복사되었습니다</span>
+    <span>복사되었습니다.</span>
   </div>
 
 <script>
@@ -263,7 +263,7 @@
             </button>
             <div class="lore-panel">
               <div class="lore-panel-inner">
-                <button class="copy-btn" type="button" aria-label="줄글 복사" title="복사">
+                <button class="copy-btn" type="button" aria-label="캐릭터 설명 복사" title="복사">
                   <svg class="ic-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   <svg class="ic-done" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </button>
