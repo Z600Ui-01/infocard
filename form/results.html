@@ -16,7 +16,7 @@
   html{-webkit-text-size-adjust:100%}
   body{
     font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;
-    background:#ffffff; color:var(--ink); line-height:1.6;
+    background:#FCFCFC; color:var(--ink); line-height:1.6;
     padding:48px 20px 80px; letter-spacing:-0.01em;
   }
   .page-head{
@@ -35,17 +35,23 @@
     }
     .summary-count{
       font-size:12px; font-weight:500; color:var(--mute);
-      letter-spacing:0.03em; margin-bottom:10px;
+      letter-spacing:-0.01em; margin-bottom:10px;
     }
-    .summary-chips{display:flex; flex-wrap:wrap; gap:8px}
+    .summary-chips{display:flex; flex-wrap:wrap; gap:6px}
     .chip{
-      font-size:13px; font-weight:600; color:#1a1a1a;
-      padding:6px 12px; border:1px solid var(--hair); border-radius:999px;
-      background:var(--paper); cursor:pointer; white-space:nowrap;
+      font-size:16px; font-weight:500; white-space:nowrap;
+      padding:8px 14px; border-radius:8px; cursor:pointer;
       font-family:inherit;
+      background:#FCFCFC; color:#1A1A1A; border:2px solid #fff;
+      box-shadow:0 4px 16px rgba(0,0,0,0.08);
+      transition:background .1s, color .1s;
     }
-    .chip:active{background:var(--ink); color:#fff; border-color:var(--ink)}
-    .chip.chip-empty{color:var(--mute)}
+    .chip:active{
+      background:#0d0d0d; color:#FCFCFC;
+      box-shadow:none;
+    }
+    .chip.chip-empty{color:#999999}
+    .chip.chip-empty:active{color:#FCFCFC}
   }
 
   .grid{
@@ -56,8 +62,8 @@
   @media (max-width:760px){ .grid{grid-template-columns:1fr} body{padding:32px 16px 64px} }
 
   .card{
-    background:var(--paper); border-radius:var(--radius);
-    box-shadow:0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08);
+    background:#FCFCFC; border-radius:12px; border:2px solid #fff;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08);
     display:flex; flex-direction:column; overflow:hidden;
   }
   .card-top{
@@ -238,7 +244,8 @@
       <div class="summary-chips">${chips}</div>
     `;
 
-    summary.querySelectorAll(".chip").forEach(chip=>{
+    const chipEls=summary.querySelectorAll(".chip");
+    chipEls.forEach(chip=>{
       chip.addEventListener("click",()=>{
         const target=document.getElementById(chip.dataset.target);
         if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
