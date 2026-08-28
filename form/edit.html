@@ -51,6 +51,7 @@
     gap:14px; min-height:70vh; text-align:center;
     color:var(--mute); font-size:14px; font-weight:500;
   }
+  .state-img{width:64px; height:64px; object-fit:contain; margin-bottom:6px}
   .spinner{
     width:28px; height:28px; border-radius:50%;
     border:3px solid #F5F7F7; border-top-color:#c4c8c8;
@@ -135,17 +136,17 @@
 
   async function load(){
     const loading=document.getElementById('loading');
-    if(!charId){loading.textContent='잘못된 수정 링크예요.';return;}
+    if(!charId){loading.innerHTML='<img class="state-img" src="empty.png" alt=""><span>잘못된 수정 링크예요.</span>';return;}
     try{
       const res=await fetch(API_URL+'?id='+encodeURIComponent(charId));
       const c=await res.json();
-      if(!c){loading.textContent='캐릭터를 찾을 수 없어요.';return;}
+      if(!c){loading.innerHTML='<img class="state-img" src="empty.png" alt=""><span>캐릭터를 찾을 수 없어요.</span>';return;}
       FIELDS.forEach(id=>{document.getElementById(id).value=c[id]||'';});
       preview();
       loading.style.display='none';
       document.getElementById('formArea').style.display='block';
     }catch(err){
-      loading.textContent='일시적 오류예요. 페이지를 새로고침해 주세요.';
+      loading.innerHTML='<img class="state-img" src="empty.png" alt=""><span>일시적 오류예요. 페이지를 새로고침해 주세요.</span>';
     }
   }
 
