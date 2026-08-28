@@ -118,12 +118,23 @@
     border-bottom:none; padding:4px 0 72px;
   }
 
-  .lore{margin:16px 24px 22px;border-radius:var(--radius);background:#f7f7f7;position:relative}
+  .lore{margin:16px 24px 22px}
+  .lore-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; background:#F5F7F7; border:none; border-radius:8px;
+    cursor:pointer; font-family:inherit; font-size:14px; font-weight:500; color:#1a1a1a;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .lore-toggle .chev{font-size:18px; color:var(--mute); transition:transform .2s}
+  .lore-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+  .lore-panel{display:none; position:relative; margin-top:8px; border-radius:8px; background:#F5F7F7}
+  .lore-panel.open{display:block}
   .copy-btn{
     position:absolute; top:8px; right:8px; z-index:2; display:flex; align-items:center;
     justify-content:center; width:28px; height:28px; padding:0; border:1px solid var(--hair);
     background:var(--paper); color:var(--mute); border-radius:var(--radius); cursor:pointer;
     transition:background .12s,color .12s,border-color .12s;
+    -webkit-tap-highlight-color:transparent;
   }
   .copy-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
   .copy-btn.done{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -140,6 +151,8 @@
     font-size:11.5px; color:var(--mute); letter-spacing:0.02em;
   }
   .copy-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .lore-toggle:focus{outline:none}
+  .lore-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .state{max-width:1200px;margin:80px auto;text-align:center;color:var(--mute);font-size:14px}
 </style>
 </head>
@@ -194,11 +207,17 @@
 
       const loreHtml=c.lore
         ? `<div class="lore">
-            <button class="copy-btn" type="button" aria-label="줄글 복사" title="복사">
-              <svg class="ic-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <svg class="ic-done" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <button class="lore-toggle" type="button" aria-expanded="false">
+              <span class="lore-toggle-label">캐릭터 설명 펼치기</span>
+              <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="lore-body">${escapeHtml(c.lore)}</div>
+            <div class="lore-panel">
+              <button class="copy-btn" type="button" aria-label="줄글 복사" title="복사">
+                <svg class="ic-copy" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="ic-done" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </button>
+              <div class="lore-body">${escapeHtml(c.lore)}</div>
+            </div>
           </div>`
         : "";
 
@@ -216,8 +235,18 @@
       grid.appendChild(el);
 
       if(c.lore){
+        const toggle=el.querySelector(".lore-toggle");
+        const panel=el.querySelector(".lore-panel");
+        const label=el.querySelector(".lore-toggle-label");
+        toggle.addEventListener("click",()=>{
+          const open=panel.classList.toggle("open");
+          toggle.setAttribute("aria-expanded",String(open));
+          label.textContent=open? "캐릭터 설명 접기" : "캐릭터 설명 펼치기";
+        });
+
         const btn=el.querySelector(".copy-btn");
-        btn.addEventListener("click",async()=>{
+        btn.addEventListener("click",async(e)=>{
+          e.stopPropagation();
           try{ await navigator.clipboard.writeText(c.lore); }
           catch(err){
             const ta=document.createElement("textarea");
