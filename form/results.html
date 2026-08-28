@@ -295,7 +295,7 @@
       const list=await res.json();
       render(list);
     }catch(err){
-      state.textContent='불러오지 못했어요. URL 설정을 확인해 주세요.';
+      state.textContent='일시적 오류예요. 페이지를 새로고침해 주세요.';
     }
   }
   load();
